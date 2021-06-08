@@ -29,13 +29,18 @@ const generateUrl = async(req, res = response) => {
 
     if(mp_transfer===1){            //MercadoPago
         const mpLink = await mpLinkGenerator(amount)
-        res.json({
+        return res.json({
             msg: {
                 newRegister,
                 mercadoPago:mpLink.body.init_point
             }
         })
     }
+    res.json({
+        msg: {
+            newRegister
+        }
+    })
 
 
 }
