@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const { db } = require('../db/connection')
-
+const { basicAuth } = require('../middlewares/basic-auth')
 class Server {
 
     constructor(){
@@ -14,10 +14,11 @@ class Server {
     }
 
 
-    middlewares(){
+    async middlewares(){
 
         this.app.use( cors() )
         this.app.use( express.json() )
+        this.app.use( basicAuth )
     }
 
     routes(){
