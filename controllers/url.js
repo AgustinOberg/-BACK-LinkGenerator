@@ -23,9 +23,10 @@ const generateUrl = async(req, res = response) => {
         ]
     })
     const lastId = lastInformation.length > 0 ? lastInformation[0].id : 0
-    const encryptedId = encryptor.encrypt(lastId)
+    const encryptedId = encryptor.encrypt(lastId + 1)
 
     const newRegister = new Information({...reqData, url: process.env.hostUrl + encryptedId })
+
     await newRegister.save()
 
     if (mp_transfer === 1) { //MercadoPago

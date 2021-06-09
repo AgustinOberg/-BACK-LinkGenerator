@@ -1,16 +1,24 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { mercadoPayment, buySuccesConfirmation } = require('../controllers/pay')
+const { mercadoPayment, buySuccesConfirmation, buyInProcessConfirmation, findByRangeDate } = require('../controllers/pay')
+const { fieldValidate } = require('../middlewares/field-validate');
 
 const router = Router();
 
 router.post('/mercadopago', [
-    check('amount', 'The amount most be number').isNumeric(),
-    check('amount', 'The amount most be empty').not().isEmpty(),
+    check('amount', 'The amount must be number').isNumeric(),
+    check('amount', "The amount must'n be empty").not().isEmpty(),
     check('amount', 'The amount id lower than one').isFloat({ min: 1 }),
+    fieldValidate
 ], mercadoPayment);
 
-router.post('/buySuccess', buySuccesConfirmation);
+router.put('/buySuccess', buySuccesConfirmation);
 
+router.put('/buyInProcess', buyInProcessConfirmation);
+
+router.post('/findByRangeDate', [
+    check('initDate', "The initDate must'n be empty").not().isEmpty(),
+    fieldValidate
+], findByRangeDate);
 
 module.exports = router;
