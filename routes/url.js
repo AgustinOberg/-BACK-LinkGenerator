@@ -16,7 +16,6 @@ router.post('/generate', [
     fieldValidate
 ], generateUrl);
 
-router.get('/', generateUrl);
 
 router.get('/:id', selectById);
 

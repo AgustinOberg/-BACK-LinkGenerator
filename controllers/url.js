@@ -22,7 +22,13 @@ const generateUrl = async(req, res = response) => {
             ['createdAt', 'DESC']
         ]
     })
-    const lastId = lastInformation.length > 0 ? lastInformation[0].id : 0
+    let lastId
+    if(lastInformation.length>0){
+        lastId = lastInformation[0].id
+    }
+    else{
+        lastId = 0
+    }
     const encryptedId = encryptor.encrypt(lastId + 1)
 
     const newRegister = new Information({...reqData, url: process.env.hostUrl + encryptedId })
