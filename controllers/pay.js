@@ -18,30 +18,31 @@ const mercadoPago = async(req = request, res = response) => {
 }
 
 const buySuccesConfirmation = async(req, res = response) => {
-     const idEncrypted = req.body.id
-     const idDecrypted = encryptor.decrypt(idEncrypted);
-     const dbData = await Information.findByPk(idDecrypted);
-        if (dbData) {
-            await dbData.update({
-                status: 2
-            })
-            const voucherData = {
-                date: dbData.updatedAt, 
-                amount: dbData.amount, 
-                platform: 'bank', 
-                encryptedId: idEncrypted
-            }
-            return res.pdfFromHTML({
-                filename: 'generated.pdf',
-                htmlContent: htmlVoucher(voucherData),
-            });
-        } else {
-            return res.status(404).json({
-                msg: "Link not found"
-            })
+    const { id: idEncrypted, type } = req.body
+    const idDecrypted = encryptor.decrypt(idEncrypted);
+    const dbData = await Information.findByPk(idDecrypted);
+    if (dbData) {
+        await dbData.update({
+            [req.body.type]: 1,
+            status: 2
+        })
+        const voucherData = {
+            date: dbData.updatedAt,
+            amount: dbData.amount,
+            platform: type,
+            encryptedId: idEncrypted
         }
+        return res.pdfFromHTML({
+            filename: 'generated.pdf',
+            htmlContent: htmlVoucher(voucherData),
+        });
+    } else {
+        return res.status(404).json({
+            msg: "Link not found"
+        })
+    }
 
-   
+
 }
 
 const buyInProcessConfirmation = async(req, res = response) => {
@@ -50,7 +51,7 @@ const buyInProcessConfirmation = async(req, res = response) => {
     const dbData = await Information.findByPk(idDecrypted);
     if (dbData) {
         await dbData.update({
-            status: 1
+            status: 0
         })
         return res.json({
             msg: "Success"

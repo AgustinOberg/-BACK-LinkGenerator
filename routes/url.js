@@ -8,9 +8,6 @@ router.post('/generate', [
     check('amount', 'The amount must be number').isNumeric(),
     check('amount', "The amount must'n be empty").not().isEmpty(),
     check('amount', 'The amount id lower than one').isFloat({ min: 1 }),
-    check('bank_transfer', 'The bank_transfer must be number').isNumeric(),
-    check('crypto_transfer', 'The crypto_transfer must be number').isNumeric(),
-    check('mp_transfer', 'The mp_transfer must be number').isNumeric(),
     check('duration', 'The duration must be number').isNumeric(),
     check('duration', 'The duration id lower than one').isFloat({ min: 1 }),
     fieldValidate

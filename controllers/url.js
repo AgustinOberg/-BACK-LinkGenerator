@@ -5,7 +5,7 @@ const { mpLinkGenerator } = require('../helpers/mpLinkGenerator')
 
 
 const generateUrl = async(req, res = response) => {
-    const { bank_transfer = 0, crypto_transfer = 0, mp_transfer = 0, amount, duration = '24' } = req.body
+    const { bank_transfer = -1, crypto_transfer = -1, mp_transfer = -1, amount, duration = '24' } = req.body
 
     const reqData = {
         bank_transfer,
@@ -23,10 +23,9 @@ const generateUrl = async(req, res = response) => {
         ]
     })
     let lastId
-    if(lastInformation.length>0){
+    if (lastInformation.length > 0) {
         lastId = lastInformation[0].id
-    }
-    else{
+    } else {
         lastId = 0
     }
     const encryptedId = encryptor.encrypt(lastId + 1)
