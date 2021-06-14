@@ -21,11 +21,4 @@ router.post('/desencrypt', [
     fieldValidate
 ], selectByEncryptedId);
 
-
-
-
-
-
-
-
 module.exports = router;

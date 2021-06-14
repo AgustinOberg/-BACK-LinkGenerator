@@ -6,6 +6,7 @@ const { Information } = require('../models/information');
 const encryptor = require('simple-encryptor')(process.env.ENCRYPTPASSWORD);
 const { Op } = require('sequelize');
 const { htmlVoucher } = require('../helpers/htmlVoucher');
+var base64ToImage = require('base64-to-image');
 
 
 
@@ -47,13 +48,17 @@ const buySuccesConfirmation = async(req, res = response) => {
 }
 
 const buyInProcessConfirmation = async(req, res = response) => {
-    const idEncrypted = req.body.id
+    const { id: idEncrypted, img } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
     if (dbData) {
         await dbData.update({
             status: 0
         })
+        const base64Str = img;
+        const path = __dirname + "/../../transferencia_comprobantes/";
+        const optionalObj = { 'fileName': idDecrypted, 'type': 'png' };
+        await base64ToImage(base64Str, path, optionalObj);
         return res.json({
             msg: "Success"
         })
@@ -91,6 +96,8 @@ const getPriceByAmount = async(req, res = response) => {
         msg: result
     })
 }
+
+
 
 module.exports = {
     mercadoPayment: mercadoPago,

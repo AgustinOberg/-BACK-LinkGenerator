@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "base64-to-image": "^1.0.2",
     "basic-auth": "^2.0.1",
     "coingecko-api": "^1.0.10",
     "cors": "^2.8.5",
@@ -18,6 +19,7 @@
     "express-pdf": "^1.2.2",
     "express-validator": "^6.11.1",
     "mercadopago": "^1.5.7",
+    "multer": "^1.4.2",
     "mysql2": "^2.2.5",
     "nodemon": "^2.0.7",
     "sequelize": "^6.6.2",
