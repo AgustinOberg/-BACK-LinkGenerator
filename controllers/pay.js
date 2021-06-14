@@ -4,6 +4,7 @@ const { mpLinkGenerator } = require('../helpers/mpLinkGenerator');
 const { Information } = require('../models/information');
 const encryptor = require('simple-encryptor')(process.env.ENCRYPTPASSWORD);
 const { Op } = require('sequelize');
+const { htmlVoucher } = require('../helpers/htmlVoucher');
 
 
 
@@ -17,21 +18,30 @@ const mercadoPago = async(req = request, res = response) => {
 }
 
 const buySuccesConfirmation = async(req, res = response) => {
-    const idEncrypted = req.body.id
-    const idDecrypted = encryptor.decrypt(idEncrypted);
-    const dbData = await Information.findByPk(idDecrypted);
-    if (dbData) {
-        await dbData.update({
-            status: 2
-        })
-        return res.json({
-            msg: "Success"
-        })
-    } else {
-        return res.status(404).json({
-            msg: "Link not found"
-        })
-    }
+     const idEncrypted = req.body.id
+     const idDecrypted = encryptor.decrypt(idEncrypted);
+     const dbData = await Information.findByPk(idDecrypted);
+        if (dbData) {
+            await dbData.update({
+                status: 2
+            })
+            const voucherData = {
+                date: dbData.updatedAt, 
+                amount: dbData.amount, 
+                platform: 'bank', 
+                encryptedId: idEncrypted
+            }
+            return res.pdfFromHTML({
+                filename: 'generated.pdf',
+                htmlContent: htmlVoucher(voucherData),
+            });
+        } else {
+            return res.status(404).json({
+                msg: "Link not found"
+            })
+        }
+
+   
 }
 
 const buyInProcessConfirmation = async(req, res = response) => {

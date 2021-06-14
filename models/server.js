@@ -2,6 +2,9 @@ const express = require('express')
 const cors = require('cors')
 const { db } = require('../db/connection')
 const { basicAuth } = require('../middlewares/basic-auth')
+const pdf = require('express-pdf');
+const path = require('path')
+bodyParser = require('body-parser')
 class Server {
 
     constructor() {
@@ -19,6 +22,8 @@ class Server {
         this.app.use(cors())
         this.app.use(express.json())
         this.app.use(basicAuth)
+        this.app.use(pdf);
+
     }
 
     routes() {
