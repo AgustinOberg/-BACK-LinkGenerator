@@ -1,4 +1,4 @@
-const htmlVoucher= ({date, amount, platform, encryptedId}) =>{
+const htmlVoucher = ({ date, amount, platform, encryptedId }) => {
     return (`
     <!DOCTYPE html>
 <html lang="en">
@@ -19,6 +19,7 @@ const htmlVoucher= ({date, amount, platform, encryptedId}) =>{
           top: 80px;
           margin: auto;
           border-style: dotted;
+          overflow-wrap: break-word;
         "
       >
         <h3 style="text-align: center">SuperSistemasWeb</h3>
@@ -26,7 +27,7 @@ const htmlVoucher= ({date, amount, platform, encryptedId}) =>{
         <p>Fecha de pago: ${date}</p>
         <p>Platform: ${platform}</p>
         <p>Monto: $${amount}</p>
-        <p>Numero de transacción: ${encryptedId}</p>
+        <p>Transacción: ${encryptedId}</p>
       </div>
     </div>
   </body>
@@ -35,6 +36,6 @@ const htmlVoucher= ({date, amount, platform, encryptedId}) =>{
     `)
 }
 
-module.exports={
+module.exports = {
     htmlVoucher
 }
