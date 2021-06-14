@@ -1,5 +1,6 @@
 const { response, request } = require('express');
 const mercadopago = require('mercadopago');
+const CoinGecko = require('coingecko-api');
 const { mpLinkGenerator } = require('../helpers/mpLinkGenerator');
 const { Information } = require('../models/information');
 const encryptor = require('simple-encryptor')(process.env.ENCRYPTPASSWORD);
@@ -77,9 +78,24 @@ const findByRangeDate = async(req, res = response) => {
     })
 }
 
+const getPriceByAmount = async(req, res = response) => {
+    const CoinGeckoClient = new CoinGecko();
+    const data = await CoinGeckoClient.simple.price({
+        ids: ['ethereum'],
+        vs_currencies: ['usd'],
+    });
+    const { amount } = req.params;
+    const result = parseFloat(amount) / parseFloat(data.data.ethereum.usd)
+
+    res.json({
+        msg: result
+    })
+}
+
 module.exports = {
     mercadoPayment: mercadoPago,
     buySuccesConfirmation,
     buyInProcessConfirmation,
-    findByRangeDate
+    findByRangeDate,
+    getPriceByAmount
 }
