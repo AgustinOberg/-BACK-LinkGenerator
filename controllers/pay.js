@@ -20,7 +20,7 @@ const mercadoPago = async(req = request, res = response) => {
 }
 
 const buySuccesConfirmation = async(req, res = response) => {
-    const { id: idEncrypted, type } = req.body
+    const { id: idEncrypted } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
     if (dbData) {
@@ -28,6 +28,29 @@ const buySuccesConfirmation = async(req, res = response) => {
             [req.body.type]: 1,
             status: 2
         })
+        return res.json({
+            msg: 'Success!'
+        })
+        
+    } else {
+        return res.status(404).json({
+            msg: "Link not found"
+        })
+    }
+
+
+}
+
+const voucher = async (req, res) =>{
+    const { id: idEncrypted } = req.body
+    const idDecrypted = encryptor.decrypt(idEncrypted);
+    const dbData = await Information.findByPk(idDecrypted);
+    if(dbData){
+        if(dbData.bank_transfer!==1 && dbData.crypto_transfer !== 1 && dbData.mp_transfer !== 1){
+            return res.status(406).json({
+                msg: 'No payment completed'
+            })
+        }
         const voucherData = {
             date: dbData.updatedAt,
             amount: dbData.amount,
@@ -38,13 +61,12 @@ const buySuccesConfirmation = async(req, res = response) => {
             filename: 'generated.pdf',
             htmlContent: htmlVoucher(voucherData),
         });
-    } else {
-        return res.status(404).json({
-            msg: "Link not found"
+    }
+    else{
+        return res.status(500).json({
+            msg: "Internal Server Error"
         })
     }
-
-
 }
 
 const buyInProcessConfirmation = async(req, res = response) => {
@@ -104,5 +126,6 @@ module.exports = {
     buySuccesConfirmation,
     buyInProcessConfirmation,
     findByRangeDate,
-    getPriceByAmount
+    getPriceByAmount,
+    voucher
 }
