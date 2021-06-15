@@ -12,8 +12,8 @@ var base64ToImage = require('base64-to-image');
 
 const mercadoPago = async(req = request, res = response) => {
 
-    const { amount } = req.body
-    const link = await mpLinkGenerator(amount)
+    const { amount, id } = req.body
+    const link = await mpLinkGenerator(amount, id)
     res.json({
         msg: link.body.init_point,
     })
@@ -21,7 +21,10 @@ const mercadoPago = async(req = request, res = response) => {
 
 const buySuccesConfirmation = async(req, res = response) => {
     const { id: idEncrypted } = req.body
-    const idDecrypted = encryptor.decrypt(idEncrypted);
+    const idDecrypted = req.body.type==='mp_transfer'?
+    (encryptor.decrypt(idEncrypted).split('|||supersistemasweb')[0])
+    :
+    (encryptor.decrypt(idEncrypted))
     const dbData = await Information.findByPk(idDecrypted);
     if (dbData) {
         await dbData.update({
