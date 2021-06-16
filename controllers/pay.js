@@ -137,13 +137,16 @@ const mercadopagoBuy = async(req, res = response) => {
             method: 'GET',
             redirect: 'follow'
         };
-        fetch(`https://api.mercadopago.com/v1/payments/${idMp}?access_token=${token}`, requestOptions)
-            .then(response => response.text())
-            .then(result => (result.status === "approved") && (await dbData.update({
+        const fetchResponse = await fetch(`https://api.mercadopago.com/v1/payments/${idMp}?access_token=${token}`, requestOptions)
+
+        const fetchData = await fetchResponse.json()
+
+        if (fetchData.status === "approved") {
+            await dbData.update({
                 mp_transfer: 1,
                 status: 2
-            })))
-            .catch(error => console.log('error', error));
+            })
+        }
     }
 }
 
