@@ -1,4 +1,6 @@
 const { response, request } = require('express');
+const axios = require('axios');
+const fetch = require("node-fetch");
 const mercadopago = require('mercadopago');
 const CoinGecko = require('coingecko-api');
 const { mpLinkGenerator } = require('../helpers/mpLinkGenerator');
@@ -12,8 +14,9 @@ var base64ToImage = require('base64-to-image');
 
 const mercadoPago = async(req = request, res = response) => {
 
-    const { amount } = req.body
-    const link = await mpLinkGenerator(amount)
+    const { amount, id: idEncrypted } = req.body
+    const idDecrypted = encryptor.decrypt(idEncrypted);
+    const link = await mpLinkGenerator(idDecrypted, amount)
     res.json({
         msg: link.body.init_point,
     })
@@ -31,7 +34,7 @@ const buySuccesConfirmation = async(req, res = response) => {
         return res.json({
             msg: 'Success!'
         })
-        
+
     } else {
         return res.status(404).json({
             msg: "Link not found"
@@ -41,12 +44,12 @@ const buySuccesConfirmation = async(req, res = response) => {
 
 }
 
-const voucher = async (req, res) =>{
+const voucher = async(req, res) => {
     const { id: idEncrypted } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
-    if(dbData){
-        if(dbData.bank_transfer!==1 && dbData.crypto_transfer !== 1 && dbData.mp_transfer !== 1){
+    if (dbData) {
+        if (dbData.bank_transfer !== 1 && dbData.crypto_transfer !== 1 && dbData.mp_transfer !== 1) {
             return res.status(406).json({
                 msg: 'No payment completed'
             })
@@ -61,8 +64,7 @@ const voucher = async (req, res) =>{
             filename: 'generated.pdf',
             htmlContent: htmlVoucher(voucherData),
         });
-    }
-    else{
+    } else {
         return res.status(500).json({
             msg: "Internal Server Error"
         })
@@ -119,6 +121,32 @@ const getPriceByAmount = async(req, res = response) => {
     })
 }
 
+const mercadopagoBuy = async(req, res = response) => {
+    res.status(200).json({
+
+    })
+    if (req.body.data) {
+        const { id } = req.params;
+        const dbData = await Information.findByPk(id);
+
+        const { id: idMp } = req.body.data;
+        const token = process.env.MERCADOPAGOTOKEN;
+
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        fetch(`https://api.mercadopago.com/v1/payments/${idMp}?access_token=${token}`, requestOptions)
+            .then(response => response.text())
+            .then(result => (result.status === "approved") && (await dbData.update({
+                mp_transfer: 1,
+                status: 2
+            })))
+            .catch(error => console.log('error', error));
+    }
+}
+
 
 
 module.exports = {
@@ -127,5 +155,6 @@ module.exports = {
     buyInProcessConfirmation,
     findByRangeDate,
     getPriceByAmount,
-    voucher
+    voucher,
+    mercadopagoBuy
 }
