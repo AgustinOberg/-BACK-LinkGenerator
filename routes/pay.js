@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { mercadoPayment, buySuccesConfirmation, buyInProcessConfirmation, findByRangeDate, getPriceByAmount } = require('../controllers/pay')
+const { mercadoPayment, buySuccesConfirmation, buyInProcessConfirmation, findByRangeDate, getPriceByAmount, voucher } = require('../controllers/pay')
 const { fieldValidate } = require('../middlewares/field-validate');
 
 const router = Router();
@@ -15,6 +15,8 @@ router.post('/mercadopago', [
 router.put('/buySuccess', buySuccesConfirmation);
 
 router.put('/buyInProcess', buyInProcessConfirmation);
+
+router.put('/voucher', voucher);
 
 router.post('/findByRangeDate', [
     check('initDate', "The initDate must'n be empty").not().isEmpty(),
