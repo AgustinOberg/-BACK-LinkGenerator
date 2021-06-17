@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.1",
     "base64-to-image": "^1.0.2",
     "basic-auth": "^2.0.1",
     "coingecko-api": "^1.0.10",
