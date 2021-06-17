@@ -1,5 +1,4 @@
 const { response, request } = require('express');
-const axios = require('axios');
 const fetch = require("node-fetch");
 const mercadopago = require('mercadopago');
 const CoinGecko = require('coingecko-api');
