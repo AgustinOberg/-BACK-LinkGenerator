@@ -8,6 +8,7 @@ const encryptor = require('simple-encryptor')(process.env.ENCRYPTPASSWORD);
 const { Op } = require('sequelize');
 const { htmlVoucher } = require('../helpers/htmlVoucher');
 var base64ToImage = require('base64-to-image');
+const { extractPayMethod } = require('../helpers/extractPayMethod');
 
 
 
@@ -48,11 +49,12 @@ const voucher = async(req, res) => {
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
     if (dbData) {
-        if (dbData.bank_transfer !== 1 && dbData.crypto_transfer !== 1 && dbData.mp_transfer !== 1) {
+        if (dbData.status===0) {
             return res.status(406).json({
                 msg: 'No payment completed'
             })
         }
+        const type = extractPayMethod(dbData)
         const voucherData = {
             date: dbData.updatedAt,
             amount: dbData.amount,
