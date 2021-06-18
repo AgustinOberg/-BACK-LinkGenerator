@@ -11,12 +11,14 @@ var base64ToImage = require('base64-to-image');
 const { extractPayMethod } = require('../helpers/extractPayMethod');
 
 
-
 const mercadoPago = async(req = request, res = response) => {
 
     const { amount, id: idEncrypted } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
-    const link = await mpLinkGenerator(idDecrypted, amount)
+    const dataFetch = await fetch("https://supersistemasweb.com/TC.php")
+    const data = await dataFetch.json()
+    const amountArs = amount * data;
+    const link = await mpLinkGenerator(idDecrypted, amountArs)
     res.json({
         msg: link.body.init_point,
     })
@@ -49,7 +51,7 @@ const voucher = async(req, res) => {
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
     if (dbData) {
-        if (dbData.status===0) {
+        if (dbData.status === 0) {
             return res.status(406).json({
                 msg: 'No payment completed'
             })
@@ -133,5 +135,5 @@ module.exports = {
     findByRangeDate,
     getPriceByAmount,
     voucher,
-    
+
 }

@@ -1,33 +1,33 @@
 const Sequelize = require('sequelize');
 const { db } = require('../db/connection');
 
-const Information = db.define('informations',{
-    url:{
+const Information = db.define('informations', {
+    url: {
         type: Sequelize.STRING
     },
-    bank_transfer:{
+    bank_transfer: {
         type: Sequelize.TINYINT
     },
-    crypto_transfer:{
+    crypto_transfer: {
         type: Sequelize.TINYINT
     },
-    mp_transfer:{
+    mp_transfer: {
         type: Sequelize.TINYINT
     },
-    status:{
+    status: {
         type: Sequelize.NUMBER
     },
-    amount:{
+    amount: {
         type: Sequelize.DOUBLE
     },
-    duration:{
+    duration: {
         type: Sequelize.NUMBER
     },
-    email:{
+    follow_number_crypto: {
         type: Sequelize.STRING
     }
 })
 
-module.exports={
+module.exports = {
     Information
 }

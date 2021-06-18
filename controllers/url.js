@@ -4,6 +4,7 @@ const encryptor = require('simple-encryptor')(process.env.ENCRYPTPASSWORD)
 const { mpLinkGenerator } = require('../helpers/mpLinkGenerator')
 
 
+
 const generateUrl = async(req, res = response) => {
     const { bank_transfer = -1, crypto_transfer = -1, mp_transfer = -1, amount, duration = '24' } = req.body
 
@@ -34,15 +35,6 @@ const generateUrl = async(req, res = response) => {
 
     await newRegister.save()
 
-    if (mp_transfer === 1) { //MercadoPago
-        const mpLink = await mpLinkGenerator(amount)
-        return res.json({
-            msg: {
-                newRegister,
-                mercadoPago: mpLink.body.init_point
-            }
-        })
-    }
     res.json({
         msg: {
             newRegister
