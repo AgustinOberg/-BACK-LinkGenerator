@@ -17,7 +17,7 @@ const mpLinkGenerator = async(id, amount) => {
             pending: 'https://www.google.com/search?q=pending&rlz=1C1ALOY_esAR944AR944&oq=pending&aqs=chrome..69i57j35i39j35i19i39j0i433j69i60j69i61j69i60l2.536j1j9&sourceid=chrome&ie=UTF-8'
         },
         auto_return: 'approved',
-        notification_url: `http://pagosx.com:8080/api/pay/${id}/mercadopago/`,
+        notification_url: `http://pagosx.com:8080/api/notify/${id}/mercadopago/`,
 
     };
     const url = await mercadopago.preferences.create(preference)

@@ -21,10 +21,12 @@ class Server {
 
         this.app.use(cors())
         this.app.use(express.json())
-            //this.app.use(basicAuth)
+        this.app.use('/api/notify', require('../routes/notify'))    //MP endpoint
+        this.app.use(basicAuth)
         this.app.use(pdf);
 
     }
+
 
     routes() {
         this.app.use('/api/url', require('../routes/url'))
