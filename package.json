@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
     "express-pdf": "^1.2.2",
     "express-validator": "^6.11.1",
     "mercadopago": "^1.5.7",

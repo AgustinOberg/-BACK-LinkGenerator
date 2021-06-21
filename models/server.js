@@ -4,6 +4,7 @@ const { db } = require('../db/connection')
 const { basicAuth } = require('../middlewares/basic-auth')
 const pdf = require('express-pdf');
 const path = require('path')
+const fileupload = require('express-fileupload')
 bodyParser = require('body-parser')
 class Server {
 
@@ -21,7 +22,8 @@ class Server {
 
         this.app.use(cors())
         this.app.use(express.json())
-        this.app.use('/api/notify', require('../routes/notify'))    //MP endpoint
+        this.app.use(fileupload())
+        this.app.use('/api/notify', require('../routes/notify')) //MP endpoint
         this.app.use(basicAuth)
         this.app.use(pdf);
 
