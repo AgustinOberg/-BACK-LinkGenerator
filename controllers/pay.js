@@ -44,8 +44,6 @@ const buySuccesConfirmation = async(req, res = response) => {
             msg: "Link not found"
         })
     }
-
-
 }
 
 const voucher = async(req, res) => {
@@ -76,37 +74,12 @@ const voucher = async(req, res) => {
     }
 }
 
-/*
-const buyInProcessConfirmation = async(req, res = response) => {
-    const { id: idEncrypted, img } = req.body
-    const idDecrypted = encryptor.decrypt(idEncrypted);
-    const dbData = await Information.findByPk(idDecrypted);
-    if (dbData) {
-        await dbData.update({
-            status: 0
-        })
-        const base64Str = img;
-        const path = __dirname + "/../../transferencia_comprobantes/";
-        const optionalObj = { 'fileName': idDecrypted, 'type': 'png' };
-        await base64ToImage(base64Str, path, optionalObj);
-        return res.json({
-            msg: "Success"
-        })
-    } else {
-        return res.status(404).json({
-            msg: "Link not found"
-        })
-    }
-}
-*/
 const buyInProcessConfirmation = async(req, res = response) => {
     const { img } = req.files
     const { id: idEncrypted } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
-    console.log(img)
-    console.log(idEncrypted)
-    img.mv("../transferencia_comprobantes/" + img.name, function(err, result) {
+    img.mv("../transferencia_comprobantes/" + idDecrypted + ".jpg", function(err, result) {
         if (err) {
             throw err;
             res.status(500).json({
@@ -118,23 +91,15 @@ const buyInProcessConfirmation = async(req, res = response) => {
             })
         }
     })
-
-    //if (dbData) {
-    //await dbData.update({
-    //status: 0
-    //})
-    //const base64Str = img;
-    //const path = __dirname + "/../../transferencia_comprobantes/";
-    //const optionalObj = { 'fileName': idDecrypted, 'type': 'png' };
-    //await base64ToImage(base64Str, path, optionalObj);
-    //return res.json({
-    //msg: "Success"
-    //})
-    //} else {
-    //return res.status(404).json({
-    //msg: "Link not found"
-    //})
-    //}
+    if (dbData) {
+        await dbData.update({
+            status: 0
+        })
+    } else {
+        return res.status(404).json({
+            msg: "Link not found"
+        })
+    }
 }
 
 
