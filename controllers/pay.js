@@ -73,26 +73,35 @@ const voucher = async(req, res) => {
 }
 
 const buyInProcessConfirmation = async(req, res = response) => {
+    console.log(req.files);
     const { img } = req.files
     const { id: idEncrypted } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
     let now = new Date();
     const nameFile = "Id=" + idDecrypted + "_" + now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear();
-    sharp(img.data)
-        .resize(1000)
-        .png({ compressionLevel: 8 })
-        .toFile("../transferencia_comprobantes/" + nameFile + ".png")
-        .then(info => {
-            return res.json({
-                msg: "Success"
-            })
-        })
-        .catch(err => { console.log(err) })
     if (dbData) {
-        await dbData.update({
-            status: 0
-        })
+        sharp(img.data)
+            .resize(1000)
+            .png({ compressionLevel: 8 })
+            .toFile("../transferencia_comprobantes/" + nameFile + ".png")
+            .then(() => {
+                dbData.update({
+                    status: 0
+                })
+                .then(()=>{
+                    return res.json({
+                        msg: "Success"
+                    })
+                })
+                .catch(()=>{
+                    res.status(500).json({
+                        msg: "INTERNAL SERVER ERROR"
+                    })
+                })
+            })
+            .catch(err => { 
+             })
     } else {
         return res.status(404).json({
             msg: "Link not found"
