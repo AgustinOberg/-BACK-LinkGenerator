@@ -7,8 +7,7 @@ const { Information } = require('../models/information');
 const encryptor = require('simple-encryptor')(process.env.ENCRYPTPASSWORD);
 const { Op } = require('sequelize');
 const { htmlVoucher } = require('../helpers/htmlVoucher');
-var base64ToImage = require('base64-to-image');
-const fileupload = require('express-fileupload')
+const sharp = require('sharp');
 const { extractPayMethod } = require('../helpers/extractPayMethod');
 
 
@@ -38,7 +37,6 @@ const buySuccesConfirmation = async(req, res = response) => {
         return res.json({
             msg: 'Success!'
         })
-
     } else {
         return res.status(404).json({
             msg: "Link not found"
@@ -79,18 +77,18 @@ const buyInProcessConfirmation = async(req, res = response) => {
     const { id: idEncrypted } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
-    img.mv("../transferencia_comprobantes/" + idDecrypted + ".jpg", function(err, result) {
-        if (err) {
-            throw err;
-            res.status(500).json({
-                msg: "Failed"
-            })
-        } else {
-            res.status(200).json({
+    let now = new Date();
+    const nameFile = "Id=" + idDecrypted + "_" + now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear();
+    sharp(img.data)
+        .resize(1000)
+        .png({ compressionLevel: 8 })
+        .toFile("../transferencia_comprobantes/" + nameFile + ".png")
+        .then(info => {
+            return res.json({
                 msg: "Success"
             })
-        }
-    })
+        })
+        .catch(err => { console.log(err) })
     if (dbData) {
         await dbData.update({
             status: 0

@@ -25,6 +25,7 @@
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.7",
     "sequelize": "^6.6.2",
+    "sharp": "^0.28.3",
     "simple-encryptor": "^4.0.0"
   }
 }
