@@ -32,7 +32,7 @@ const buySuccesConfirmation = async(req, res = response) => {
         await dbData.update({
             [req.body.type]: 1,
             follow_number_crypto: req.body.follow_number_crypto && (req.body.follow_number_crypto),
-            status: 1
+            status: 2
         })
         return res.json({
             msg: 'Success!'

@@ -6,6 +6,9 @@ const mpLinkGenerator = async(id, amount) => {
         access_token: process.env.MERCADOPAGOTOKEN
     });
     const preference = {
+        payment_methods: {
+            installments: 1
+        },
         items: [{
             title: 'SUPERSISTEMASWEB',
             unit_price: amount,
@@ -18,6 +21,7 @@ const mpLinkGenerator = async(id, amount) => {
         },
         auto_return: 'approved',
         notification_url: `http://pagosx.com:8080/api/notify/${id}/mercadopago/`,
+        
 
     };
     const url = await mercadopago.preferences.create(preference)
