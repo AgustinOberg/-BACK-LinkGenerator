@@ -1,4 +1,4 @@
-const htmlVoucher = ({ date, amount, platform, encryptedId }) => {
+const htmlVoucher = ({ date, amount, platform, encryptedId, status }) => {
     return (`
     <!DOCTYPE html>
 <html lang="en">
@@ -25,9 +25,10 @@ const htmlVoucher = ({ date, amount, platform, encryptedId }) => {
         <h3 style="text-align: center">SuperSistemasWeb</h3>
         <hr />
         <p>Fecha de pago: ${date}</p>
-        <p>Platform: ${platform}</p>
+        <p>Platform: ${platform===undefined?('Transferencia Bancaria'):(platform)}</p>
         <p>Monto: $${amount}</p>
         <p>Transacción: ${encryptedId}</p>
+        <p>Estado: ${status}</p>
       </div>
     </div>
   </body>

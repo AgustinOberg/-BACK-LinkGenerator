@@ -18,7 +18,7 @@ const mercadoPago = async(req = request, res = response) => {
     const dataFetch = await fetch("https://supersistemasweb.com/TC.php")
     const data = await dataFetch.json()
     const amountArs = amount * data;
-    const link = await mpLinkGenerator(idDecrypted, amountArs)
+    const link = await mpLinkGenerator(idDecrypted, amountArs, idEncrypted)
     res.json({
         msg: link.body.init_point,
     })
@@ -30,7 +30,8 @@ const buySuccesConfirmation = async(req, res = response) => {
     const dbData = await Information.findByPk(idDecrypted);
     if (dbData) {
         await dbData.update({
-            [req.body.type]: 1,
+            crypto_transfer: req.body.follow_number_crypto?(1):(0),
+            bank_transfer: req.body.follow_number_crypto?(0):(1),
             follow_number_crypto: req.body.follow_number_crypto && (req.body.follow_number_crypto),
             status: 2
         })
@@ -49,7 +50,7 @@ const voucher = async(req, res) => {
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
     if (dbData) {
-        if (dbData.status === 0) {
+        if (dbData.status === -1) {
             return res.status(406).json({
                 msg: 'No payment completed'
             })
@@ -59,7 +60,8 @@ const voucher = async(req, res) => {
             date: dbData.updatedAt,
             amount: dbData.amount,
             platform: type,
-            encryptedId: idEncrypted
+            encryptedId: idEncrypted,
+            status: dbData.status===0?('En Revisión'):('Exitoso')
         }
         return res.pdfFromHTML({
             filename: 'generated.pdf',

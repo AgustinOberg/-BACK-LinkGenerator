@@ -31,7 +31,7 @@ const generateUrl = async(req, res = response) => {
     }
     const encryptedId = encryptor.encrypt(lastId + 1)
 
-    const newRegister = new Information({...reqData, url: process.env.hostUrl + encryptedId })
+    const newRegister = new Information({...reqData, url: process.env.HOSTURL + encryptedId })
 
     await newRegister.save()
 
