@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { mercadoPayment, buySuccesConfirmation, buyInProcessConfirmation, findByRangeDate, getPriceByAmount, voucher } = require('../controllers/pay')
+const { mercadoPayment, dollarToArs, buySuccesConfirmation, buyInProcessConfirmation, findByRangeDate, getPriceByAmount, voucher } = require('../controllers/pay')
 const { fieldValidate } = require('../middlewares/field-validate');
 
 const router = Router();
@@ -24,5 +24,8 @@ router.post('/findByRangeDate', [
 ], findByRangeDate);
 
 router.get('/priceByAmount/:amount', getPriceByAmount);
+
+router.post('/dollarToArs', dollarToArs);
+
 
 module.exports = router;

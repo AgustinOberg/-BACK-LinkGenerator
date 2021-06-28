@@ -24,6 +24,27 @@ const mercadoPago = async(req = request, res = response) => {
     })
 }
 
+
+const dollarToArs = async(req, res) => {
+    const {amount} = req.body
+    try {
+        const dataFetch = await fetch("https://supersistemasweb.com/TC.php")
+        const data = await dataFetch.json()
+        const amountArs = amount * data;
+        res.json({
+            msg: amountArs
+        })
+    } catch (error) {
+        res.status(500)({
+            msg: 'Internal Server Error'
+        })
+    }
+
+
+
+}
+
+
 const buySuccesConfirmation = async(req, res = response) => {
     const { id: idEncrypted } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
@@ -151,5 +172,6 @@ module.exports = {
     findByRangeDate,
     getPriceByAmount,
     voucher,
+    dollarToArs
 
 }
