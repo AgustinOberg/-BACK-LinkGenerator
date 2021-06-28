@@ -96,36 +96,46 @@ const voucher = async(req, res) => {
 }
 
 const buyInProcessConfirmation = async(req, res = response) => {
-    console.log(req.files);
     const { img } = req.files
+    const imgArray = Array.from(img)
     const { id: idEncrypted } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
-    let now = new Date();
-    const nameFile = "Id=" + idDecrypted + "_" + now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear();
+    let allSuccess=true
     if (dbData) {
-        sharp(img.data)
-            .resize(1000)
-            .png({ compressionLevel: 8 })
-            .toFile("../transferencia_comprobantes/" + nameFile + ".png")
-            .then(() => {
-                dbData.update({
-                    status: 0
-                })
-                .then(()=>{
-                    return res.json({
-                        msg: "Success"
-                    })
-                })
+        imgArray.forEach((eachImg, eachIndex) => {
+            const nameFile = "Id=" + idDecrypted + "_" + eachIndex;
+            if(allSuccess){
+                sharp(eachImg.data)
+                .resize(1000)
+                .png({ compressionLevel: 8 })
+                .toFile("../transferencia_comprobantes/" + nameFile + ".png")
                 .catch(()=>{
-                    res.status(500).json({
-                        msg: "INTERNAL SERVER ERROR"
-                    })
+                    allSuccess = false
                 })
+            }
+            else{
+                return res.status(500).json({
+                    msg: 'Internal Server Error'
+                })
+            }
+        })
+        dbData.update({
+            status: 0
+        })
+        .then(()=>{
+            return res.json({
+                msg: 'Success'
             })
-            .catch(err => { 
-             })
-    } else {
+        })
+        .catch(()=>{
+            return res.status(500).json({
+                msg: 'Internal Server Error'
+            })
+        })
+    
+    } 
+    else {
         return res.status(404).json({
             msg: "Link not found"
         })
