@@ -54,6 +54,7 @@ const buySuccesConfirmation = async(req, res = response) => {
             crypto_transfer: req.body.follow_number_crypto?(1):(0),
             bank_transfer: req.body.follow_number_crypto?(0):(1),
             follow_number_crypto: req.body.follow_number_crypto && (req.body.follow_number_crypto),
+            chain_id: req.body.chain_id && (req.body.chain_id),
             status: 2
         })
         return res.json({
@@ -170,10 +171,6 @@ const getPriceByAmount = async(req, res = response) => {
         msg: result
     })
 }
-
-
-
-
 
 module.exports = {
     mercadoPayment: mercadoPago,
