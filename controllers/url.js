@@ -6,7 +6,7 @@ const { mpLinkGenerator } = require('../helpers/mpLinkGenerator')
 
 
 const generateUrl = async(req, res = response) => {
-    const { bank_transfer = -1, crypto_transfer = -1, mp_transfer = -1, amount, duration = '24',  id_client, business_type} = req.body
+    const { bank_transfer = -1, crypto_transfer = -1, mp_transfer = -1, amount, duration = '1',  id_client, business_type} = req.body
 
     const reqData = {
         bank_transfer,

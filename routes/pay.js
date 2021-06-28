@@ -9,14 +9,26 @@ router.post('/mercadopago', [
     check('amount', 'The amount must be number').isNumeric(),
     check('amount', "The amount must'n be empty").not().isEmpty(),
     check('amount', 'The amount id lower than one').isFloat({ min: 1 }),
+    check('business_type', "The business_type must'n be empty").not().isEmpty(),
+    check('business_type', "The business_type must be number").isNumeric(),
+    check('id', "The id must'n be empty").not().isEmpty(),
     fieldValidate
 ], mercadoPayment);
 
-router.put('/buySuccess', buySuccesConfirmation);
+router.put('/buySuccess', [
+    check('id', "The id must'n be empty").not().isEmpty(),
+    fieldValidate
+], buySuccesConfirmation);
 
-router.put('/buyInProcess', buyInProcessConfirmation);
+router.put('/buyInProcess', [
+    check('id', "The id must'n be empty").not().isEmpty(),
+    fieldValidate
+], buyInProcessConfirmation);
 
-router.put('/voucher', voucher);
+router.put('/voucher', [
+    check('id', "The id must'n be empty").not().isEmpty(),
+    fieldValidate
+], voucher);
 
 router.post('/findByRangeDate', [
     check('initDate', "The initDate must'n be empty").not().isEmpty(),
@@ -25,7 +37,10 @@ router.post('/findByRangeDate', [
 
 router.get('/priceByAmount/:amount', getPriceByAmount);
 
-router.post('/dollarToArs', dollarToArs);
-
+router.post('/dollarToArs', [
+    check('amount', 'The amount must be number').isNumeric(),
+    check('amount', "The amount must'n be empty").not().isEmpty(),
+    fieldValidate
+] , dollarToArs);
 
 module.exports = router;
