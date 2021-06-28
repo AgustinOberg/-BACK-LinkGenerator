@@ -6,15 +6,19 @@ const { mpLinkGenerator } = require('../helpers/mpLinkGenerator')
 
 
 const generateUrl = async(req, res = response) => {
-    const { bank_transfer = -1, crypto_transfer = -1, mp_transfer = -1, amount, duration = '24' } = req.body
+    const { bank_transfer = -1, crypto_transfer = -1, mp_transfer = -1, amount, duration = '24',  id_client, chain_id, business_type} = req.body
 
     const reqData = {
         bank_transfer,
         crypto_transfer,
         mp_transfer,
         amount,
-        duration
+        duration, 
+        id_client, 
+        chain_id, 
+        business_type
     }
+
 
     const lastInformation = await Information.findAll({
         limit: 1,
@@ -32,7 +36,6 @@ const generateUrl = async(req, res = response) => {
     const encryptedId = encryptor.encrypt(lastId + 1)
 
     const newRegister = new Information({...reqData, url: process.env.HOSTURL + encryptedId })
-
     await newRegister.save()
 
     res.json({

@@ -25,6 +25,15 @@ const Information = db.define('informations', {
     },
     follow_number_crypto: {
         type: Sequelize.STRING
+    },
+    id_client: {
+        type: Sequelize.NUMBER
+    },
+    chain_id: {
+        type: Sequelize.STRING
+    },
+    business_type: {
+        type: Sequelize.TINYINT
     }
 })
 
