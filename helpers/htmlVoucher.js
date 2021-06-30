@@ -11,6 +11,7 @@ const htmlVoucher = ({ date, amount, platform, encryptedId, status }) => {
     <title>Comprobante</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="">
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap"
       rel="stylesheet"
@@ -35,8 +36,15 @@ const htmlVoucher = ({ date, amount, platform, encryptedId, status }) => {
           overflow-wrap: break-word;
         "
       >
-          <img style='align:center;margin: auto; width: 130px; height:50px' src="https://www.pagosx.com/logoSS-PX.jpg"/>
-        <hr />
+      <div style="display: flex; justify-content: center; align-items: center; width: 100%; text-align:center;">
+          <img style="
+          text-align:center;
+          width: 130px;
+          height:50px;
+          margin-bottom: 0.3rem;"
+          src="https://www.pagosx.com/logoSS-PX.jpg"/>
+        </div>
+        <hr/>
         <p>Fecha de pago: ${date}</p>
         <p>
           Platform: ${platform===undefined?('Transferencia Bancaria'):(platform)}
