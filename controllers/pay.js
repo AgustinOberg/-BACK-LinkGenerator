@@ -64,6 +64,26 @@ const completedPays = async(req, res) => {
 
 
 }
+const inProgress = async(req, res) => {
+    const {page_number=0, register_quantity=3} = req.query
+    try {
+        const result = await Information.findAndCountAll({
+            where: {
+                status: 1
+            },
+            limit: parseInt(register_quantity),
+            order: [['updatedAt', 'ASC']],
+            offset: parseInt(page_number)
+        })
+        
+        res.json({msg: result})
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            msg: 'Internal server error'
+        })
+    }
+}
 
 
 const buySuccesConfirmation = async(req, res = response) => {
@@ -143,7 +163,8 @@ const buyInProcessConfirmation = async(req, res = response) => {
             }
         })
         dbData.update({
-            status: 0
+            status: 1,
+            bank_transfer:1
         })
         .then(()=>{
             return res.json({
@@ -201,6 +222,7 @@ module.exports = {
     getPriceByAmount,
     voucher,
     dollarToArs,
-    completedPays
+    completedPays,
+    inProgress
 
 }
