@@ -69,7 +69,7 @@ const inProgress = async(req, res) => {
     try {
         const result = await Information.findAndCountAll({
             where: {
-                status: 1
+                status: 0
             },
             limit: parseInt(register_quantity),
             order: [['updatedAt', 'ASC']],
@@ -163,7 +163,7 @@ const buyInProcessConfirmation = async(req, res = response) => {
             }
         })
         dbData.update({
-            status: 1,
+            status: 0,
             bank_transfer:1
         })
         .then(()=>{
