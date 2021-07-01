@@ -1,6 +1,5 @@
 const { response, request } = require('express');
 const fetch = require("node-fetch");
-const mercadopago = require('mercadopago');
 const CoinGecko = require('coingecko-api');
 const { mpLinkGenerator } = require('../helpers/mpLinkGenerator');
 const { Information } = require('../models/information');
@@ -40,6 +39,28 @@ const dollarToArs = async(req, res) => {
         })
     }
 
+}
+
+const completedPays = async(req, res) => {
+    const {page_number=0, register_quantity=3} = req.query
+    try {
+        const result = await Information.findAndCountAll({
+            where: {
+                status: 2,
+                [Op.or]: [{crypto_transfer:1}, {mp_transfer: 1}]
+            },
+            limit: parseInt(register_quantity),
+            order: [['updatedAt', 'DESC']],
+            offset: parseInt(page_number)
+        })
+        
+        res.json({msg: result})
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            msg: 'Internal server error'
+        })
+    }
 
 
 }
@@ -179,6 +200,7 @@ module.exports = {
     findByRangeDate,
     getPriceByAmount,
     voucher,
-    dollarToArs
+    dollarToArs,
+    completedPays
 
 }
