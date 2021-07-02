@@ -8,6 +8,7 @@ const { Op } = require('sequelize');
 const { htmlVoucher } = require('../helpers/htmlVoucher');
 const sharp = require('sharp');
 const { extractPayMethod } = require('../helpers/extractPayMethod');
+const {customAxios} = require('../helpers/p2pExtract')
 
 
 const mercadoPago = async(req = request, res = response) => {
@@ -215,6 +216,35 @@ const getPriceByAmount = async(req, res = response) => {
     })
 }
 
+const getValueByP2P = async (req, res =response) => {
+    const {asset} = req.query;
+    let mediaValue = 0
+    const value = await customAxios(asset);
+    res.json({
+        msg: value
+    })
+}
+
+const getValueMetamask = async (req, res=response) => {
+    const {amount=10, asset="USDT"} = req.query;
+    let amountFinal= 0
+    try {
+        const dataFetch = await fetch("https://supersistemasweb.com/TC.php")
+        const data = await dataFetch.json()
+        const amountFinal = parseFloat(amount) * data;
+        const value = await customAxios(asset);
+        const finalValue = (amountFinal/value)*1.005
+        const percent = (1 - (finalValue/parseFloat(amount)))*100
+        return res.json({
+            msg: {metamask: finalValue, percent: percent}
+        })
+    } catch (error) {
+        return res.status(500)({
+            msg: 'Internal Server Error'
+        })
+    }
+}
+
 module.exports = {
     mercadoPayment: mercadoPago,
     buySuccesConfirmation,
@@ -224,6 +254,7 @@ module.exports = {
     voucher,
     dollarToArs,
     completedPays,
-    inProgress
-
+    inProgress,
+    getValueByP2P,
+    getValueMetamask
 }
