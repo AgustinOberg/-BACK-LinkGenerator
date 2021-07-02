@@ -139,7 +139,8 @@ const voucher = async(req, res) => {
 
 const buyInProcessConfirmation = async(req, res = response) => {
     const { img } = req.files
-    const imgArray = Array.from(img)
+    const imgArray = (img.length)?(img):([img])
+    console.log(img)
     const { id: idEncrypted } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
