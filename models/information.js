@@ -11,6 +11,9 @@ const Information = db.define('informations', {
     crypto_transfer: {
         type: Sequelize.TINYINT
     },
+    binance_transfer: {
+        type: Sequelize.TINYINT
+    },
     mp_transfer: {
         type: Sequelize.TINYINT
     },
