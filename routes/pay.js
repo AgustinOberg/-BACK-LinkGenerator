@@ -51,8 +51,11 @@ router.get('/getValueFromBinanceP2P', getValueByP2P)
 
 router.get('/getValueForMetamask', getValueMetamask)
 
-router.put('/buyinProgressCrypto', inProgressCrypto)
+router.put('/buyinProgressCrypto', [
+    check('id', "The id is required").not().isEmpty(),
+    check('followNumber', "The followNumber is required").not().isEmpty(),
+    fieldValidate
+], inProgressCrypto)
 
-router.put('/buycompletedCrypto', completedCrypto)
 
 module.exports = router;

@@ -247,14 +247,13 @@ const getValueMetamask = async (req, res=response) => {
 
 
 const inProgressCrypto = async (req, res=response) => {
-    const { id: idEncrypted } = req.body
+    const { id: idEncrypted, followNumber } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
     if (dbData) {
         await dbData.update({
             binance_transfer: 1,
-            follow_number_crypto: req.body.follow_number_crypto,
-            chain_id: req.body.chain_id,
+            follow_number_crypto: followNumber,
             status: 1
         })
         return res.json({
@@ -267,26 +266,6 @@ const inProgressCrypto = async (req, res=response) => {
     }
 }
 
-const completedCrypto = async (req, res=response) => {
-    const { id: idEncrypted } = req.body
-    const idDecrypted = encryptor.decrypt(idEncrypted);
-    const dbData = await Information.findByPk(idDecrypted);
-    if (dbData) {
-        await dbData.update({
-            binance_transfer: req.body.follow_number_crypto?(2):(1),
-            follow_number_crypto: req.body.follow_number_crypto && (req.body.follow_number_crypto),
-            chain_id: req.body.chain_id && (req.body.chain_id),
-            status: 2
-        })
-        return res.json({
-            msg: 'Success!'
-        })
-    } else {
-        return res.status(404).json({
-            msg: "Link not found"
-        })
-    }
-}
 
 module.exports = {
     mercadoPayment: mercadoPago,
@@ -301,5 +280,5 @@ module.exports = {
     getValueByP2P,
     getValueMetamask,
     inProgressCrypto,
-    completedCrypto
+    
 }
