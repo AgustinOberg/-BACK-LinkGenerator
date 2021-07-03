@@ -8,6 +8,9 @@ const extractPayMethod = (data) => {
     if(data.mp_transfer != 0){
         return 'Mercado Pago'
     }
+    if(data.binance_transfer != 0){
+        return 'Transferencia en binance'
+    }
     
 }
 

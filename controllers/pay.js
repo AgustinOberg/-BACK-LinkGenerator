@@ -92,13 +92,28 @@ const buySuccesConfirmation = async(req, res = response) => {
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
     if (dbData) {
-        await dbData.update({
-            crypto_transfer: req.body.follow_number_crypto?(1):(0),
-            bank_transfer: req.body.follow_number_crypto?(0):(1),
-            follow_number_crypto: req.body.follow_number_crypto && (req.body.follow_number_crypto),
-            chain_id: req.body.chain_id && (req.body.chain_id),
-            status: 2
-        })
+        const payMethod = extractPayMethod(dbData)
+        console.log(payMethod)
+        if(payMethod === 'Transferencia Bancaria') {
+            await dbData.update({
+                bank_transfer: 1,
+                status: 2
+            })
+        }
+        if(req.body.follow_number_crypto && req.body.chain_id) { // Metamask
+            await dbData.update({
+                crypto_transfer: 1,
+                follow_number_crypto: req.body.follow_number_crypto,
+                chain_id: req.body.chain_id,
+                status: 2
+            })
+        }
+        if(payMethod === 'Transferencia en binance') {
+            await dbData.update({
+                binance_transfer: 1,
+                status: 2
+            })
+        }
         return res.json({
             msg: 'Success!'
         })
@@ -279,6 +294,5 @@ module.exports = {
     inProgress,
     getValueByP2P,
     getValueMetamask,
-    inProgressCrypto,
-    
+    inProgressCrypto
 }
