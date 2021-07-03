@@ -236,7 +236,7 @@ const getValueMetamask = async (req, res=response) => {
         const finalValue = (amountFinal/value)*1.005
         const percent = (1 - (finalValue/parseFloat(amount)))*100
         return res.json({
-            msg: {metamask: finalValue, percent: percent}
+            msg: {metamask: finalValue.toFixed(2), percent: percent.toFixed(2)}
         })
     } catch (error) {
         return res.status(500)({
