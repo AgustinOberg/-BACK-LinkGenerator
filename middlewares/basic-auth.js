@@ -6,7 +6,7 @@ const basicAuth = async (req, res, next) =>{
     const username = process.env.APIUSER
     const password = process.env.APIPASSWORD
     if(!user){
-        return res.status(414).json({
+        return res.status(403).json({
             msg: 'Access Denied'
         })
     }
@@ -14,7 +14,7 @@ const basicAuth = async (req, res, next) =>{
         next()
     }
     else{
-        return res.status(414).json({
+        return res.status(403).json({
             msg: 'Access Denied'
         })
     }

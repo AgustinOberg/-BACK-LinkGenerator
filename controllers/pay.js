@@ -13,12 +13,12 @@ const {customAxios} = require('../helpers/p2pExtract')
 
 const mercadoPago = async(req = request, res = response) => {
 
-    const { amount, id: idEncrypted } = req.body
+    const { amount, id: idEncrypted, business_type } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dataFetch = await fetch("https://supersistemasweb.com/TC.php")
     const data = await dataFetch.json()
     const amountArs = amount * data;
-    const link = await mpLinkGenerator(idDecrypted, amountArs, idEncrypted)
+    const link = await mpLinkGenerator(idDecrypted, amountArs, business_type)
     res.json({
         msg: link.body.init_point,
     })
