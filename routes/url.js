@@ -7,7 +7,7 @@ const router = Router();
 router.post('/generate', [
     check('amount', 'The amount must be number').isNumeric(),
     check('amount', "The amount must'n be empty").not().isEmpty(),
-    check('amount', 'The amount id lower than one').isFloat({ min: 1 }),
+    check('amount', 'The amount id lower than 0').isFloat({ min: 0 }),
     check('duration', 'The duration must be number').isNumeric(),
     check('duration', 'The duration id lower than one').isFloat({ min: 1 }),
     check('business_type', 'The business_type must be number').isNumeric(),
