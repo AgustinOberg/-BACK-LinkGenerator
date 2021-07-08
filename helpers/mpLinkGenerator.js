@@ -14,7 +14,7 @@ const mpLinkGenerator = async(id, amount, type) => {
             unit_price: amount,
             quantity: 1,
         }],
-        notification_url: `http://pagosx.com:8080/api/notify/${id}/mercadopago/`,
+        notification_url: `https://pagosx.com:8080/api/notify/${id}/mercadopago/`,
         
 
     };
