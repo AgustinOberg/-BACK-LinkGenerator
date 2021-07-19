@@ -162,10 +162,10 @@ const buyInProcessConfirmation = async(req, res = response) => {
     let allSuccess=true
     if (dbData) {
         imgArray.forEach((eachImg, eachIndex) => {
-            fs.mkdirSync('../transferencia_comprobantes/'+idDecrypted, {
-                recursive: true
-            });
             if(allSuccess){
+                fs.mkdirSync('../transferencia_comprobantes/'+idDecrypted, {
+                    recursive: true
+                });
                 sharp(eachImg.data)
                 .resize(1000)
                 .png({ compressionLevel: 8 })
