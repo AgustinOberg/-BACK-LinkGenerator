@@ -9,6 +9,7 @@ const { htmlVoucher } = require('../helpers/htmlVoucher');
 const sharp = require('sharp');
 const { extractPayMethod } = require('../helpers/extractPayMethod');
 const {customAxios} = require('../helpers/p2pExtract')
+const fs = require('fs');
 
 
 const mercadoPago = async(req = request, res = response) => {
@@ -93,7 +94,6 @@ const buySuccesConfirmation = async(req, res = response) => {
     const dbData = await Information.findByPk(idDecrypted);
     if (dbData) {
         const payMethod = extractPayMethod(dbData)
-        console.log(payMethod)
         if(payMethod === 'Transferencia Bancaria') {
             await dbData.update({
                 bank_transfer: 1,
@@ -156,21 +156,23 @@ const voucher = async(req, res) => {
 const buyInProcessConfirmation = async(req, res = response) => {
     const { img } = req.files
     const imgArray = (img.length)?(img):([img])
-    console.log(img)
     const { id: idEncrypted } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dbData = await Information.findByPk(idDecrypted);
     let allSuccess=true
     if (dbData) {
         imgArray.forEach((eachImg, eachIndex) => {
-            const nameFile = "Id=" + idDecrypted + "_" + eachIndex;
+            fs.mkdirSync('../transferencia_comprobantes/'+idDecrypted, {
+                recursive: true
+            });
             if(allSuccess){
                 sharp(eachImg.data)
                 .resize(1000)
                 .png({ compressionLevel: 8 })
-                .toFile("../transferencia_comprobantes/" + nameFile + ".png")
-                .catch(()=>{
+                .toFile("../transferencia_comprobantes/"+idDecrypted+"/" + eachIndex+1 + ".png")
+                .catch((err)=>{
                     allSuccess = false
+                    console.log(err)
                 })
             }
             else{
