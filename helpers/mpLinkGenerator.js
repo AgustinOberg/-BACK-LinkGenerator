@@ -7,7 +7,15 @@ const mpLinkGenerator = async(id, amount, type) => {
     });
     const preference = {
         payment_methods: {
-            installments: 1
+            installments: 1,
+            excluded_payment_types: [
+                {
+                    "id": "ticket"
+                },
+                {
+                    "id": "atm"
+                }
+            ]
         },
         items: [{
             title: 'SUPERSISTEMASWEB',

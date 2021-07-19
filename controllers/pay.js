@@ -19,7 +19,8 @@ const mercadoPago = async(req = request, res = response) => {
     const dataFetch = await fetch("https://supersistemasweb.com/TC.php")
     const data = await dataFetch.json()
     const amountArs = amount * data;
-    const link = await mpLinkGenerator(idDecrypted, amountArs, business_type)
+    const amountAfterTaxes = (amountArs / ( 1 - (6.39 * 0.0121)))
+    const link = await mpLinkGenerator(idDecrypted, amountAfterTaxes, business_type)
     res.json({
         msg: link.body.init_point,
     })
