@@ -8,7 +8,6 @@ const router = Router();
 router.post('/mercadopago', [
     check('amount', 'The amount must be number').isNumeric(),
     check('amount', "The amount must'n be empty").not().isEmpty(),
-    check('amount', 'The amount id lower than one').isFloat({ min: 1 }),
     check('business_type', "The business_type must'n be empty").not().isEmpty(),
     check('business_type', "The business_type must be number").isNumeric(),
     check('id', "The id must'n be empty").not().isEmpty(),
