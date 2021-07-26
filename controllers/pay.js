@@ -13,7 +13,6 @@ const fs = require('fs');
 
 
 const mercadoPago = async(req = request, res = response) => {
-
     const { amount, id: idEncrypted, business_type } = req.body
     const idDecrypted = encryptor.decrypt(idEncrypted);
     const dataFetch = await fetch("https://supersistemasweb.com/TC.php")

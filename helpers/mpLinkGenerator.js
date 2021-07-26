@@ -1,10 +1,10 @@
 const mercadopago = require('mercadopago');
 
 const mpLinkGenerator = async(id, amount, type) => {
-
     mercadopago.configure({
         access_token: type===0?(process.env.MERCADOPAGOTOKEN_0):(process.env.MERCADOPAGOTOKEN_1)
     });
+    const notifyUrl = `https://pagosx.com/api/notify/${id}/mercadopago/${type}/`
     const preference = {
         payment_methods: {
             installments: 1,
@@ -22,7 +22,7 @@ const mpLinkGenerator = async(id, amount, type) => {
             unit_price: amount,
             quantity: 1,
         }],
-        notification_url: `https://pagosx.com/api/notify/${id}/mercadopago/${type}/`,
+        notification_url: notifyUrl,
         
 
     };
