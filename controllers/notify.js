@@ -5,7 +5,7 @@ const mpNotify = async (req, res) =>{
         res.status(200).json({
         })
         if (req.body.data) {
-            const { id, type:bussines_type} = req.params; 
+            const { id, type:bussines_type} = req.params;
             const dbData = await Information.findByPk(id);
             const { id: idMp } = req.body.data;
             const token = bussines_type === "0"?(process.env.MERCADOPAGOTOKEN_0):(process.env.MERCADOPAGOTOKEN_1)

@@ -283,6 +283,41 @@ const inProgressCrypto = async (req, res=response) => {
     }
 }
 
+const checkState = async (req, res=response) => {
+    const { hash } = req.params
+    const requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+    };
+    const bscscan = await fetch (`https://api.bscscan.com/api?module=proxy&action=eth_getTransactionReceipt&txhash=${hash}&apikey=${process.env.API_KEY_Bsc}`, requestOptions)
+    const polygon = await fetch (`https://api.polygonscan.com/api?module=proxy&action=eth_getTransactionReceipt&txhash=${hash}&apikey=${process.env.API_KEY_Ply}`, requestOptions)
+    const ethereum = await fetch (`https://api.etherscan.io/api?module=proxy&action=eth_getTransactionReceipt&txhash=${hash}&apikey=${process.env.API_KEY_Eth}`, requestOptions)
+    const bscscanData = await bscscan.json()
+    const polygonData = await polygon.json()
+    const ethereumData = await ethereum.json()
+    var transactionCheck = ""
+    if (!bscscanData.error  || !polygonData.error || !ethereumData.error) {
+        if ( bscscanData.result !== null) {
+            transactionCheck = bscscanData.result
+        }
+        if ( polygonData.result !== null) {
+            transactionCheck = polygonData.result
+        }
+        if ( ethereumData.result !== null) {
+            transactionCheck = ethereumData.result
+        }
+        const {to, status} = transactionCheck
+        if ( (to === process.env.to_bt1 || to === process.env.to_bt2) && (status === '0x1') ){
+            return res.status(200).json({
+                msg: "Pago aprobado"
+            })
+        }
+    }
+    return res.status(400).json({
+        msg: "No se pudo encontrar"
+    })
+}
+
 
 module.exports = {
     mercadoPayment: mercadoPago,
@@ -296,5 +331,6 @@ module.exports = {
     inProgress,
     getValueByP2P,
     getValueMetamask,
-    inProgressCrypto
+    inProgressCrypto,
+    checkState
 }

@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { mercadoPayment, dollarToArs, buySuccesConfirmation, buyInProcessConfirmation, findByRangeDate, getPriceByAmount, voucher, completedPays, inProgress, getValueByP2P, getValueMetamask, inProgressCrypto, completedCrypto } = require('../controllers/pay')
+const { mercadoPayment, dollarToArs, buySuccesConfirmation, buyInProcessConfirmation, findByRangeDate, getPriceByAmount, voucher, completedPays, inProgress, getValueByP2P, getValueMetamask, inProgressCrypto, completedCrypto, checkState } = require('../controllers/pay')
 const { fieldValidate } = require('../middlewares/field-validate');
 
 const router = Router();
@@ -49,6 +49,8 @@ router.post('/dollarToArs', [
 router.get('/getValueFromBinanceP2P', getValueByP2P)
 
 router.get('/getValueForMetamask', getValueMetamask)
+
+router.get('/transferCheck/:hash', checkState)
 
 router.put('/buyinProgress/crypto', [
     check('id', "The id is required").not().isEmpty(),
