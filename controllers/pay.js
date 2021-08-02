@@ -10,6 +10,7 @@ const sharp = require('sharp');
 const { extractPayMethod } = require('../helpers/extractPayMethod');
 const {customAxios} = require('../helpers/p2pExtract')
 const fs = require('fs');
+const { searchAddress } = require('../helpers/findTo');
 
 
 const mercadoPago = async(req = request, res = response) => {
@@ -306,8 +307,8 @@ const checkState = async (req, res=response) => {
         if ( ethereumData.result !== null) {
             transactionCheck = ethereumData.result
         }
-        const {to, status} = transactionCheck
-        if ( (to === process.env.to_bt1 || to === process.env.to_bt2) && (status === '0x1') ){
+        const {to, status, logs} = transactionCheck
+        if ( (to === "0x" + process.env.to_bt1 || to === "0x" + process.env.to_bt2 || searchAddress(logs,process.env.to_bt1, process.env.to_bt2)) && (status === '0x1') ){
             return res.status(200).json({
                 msg: "Pago aprobado"
             })
@@ -332,5 +333,5 @@ module.exports = {
     getValueByP2P,
     getValueMetamask,
     inProgressCrypto,
-    checkState
+    checkState,
 }
