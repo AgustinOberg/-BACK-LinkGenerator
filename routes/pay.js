@@ -50,7 +50,7 @@ router.get('/getValueFromBinanceP2P', getValueByP2P)
 
 router.get('/getValueForMetamask', getValueMetamask)
 
-router.get('/transferCheck/:hash', checkState)
+router.get('/transferCheck/:hash/:account', checkState)
 
 router.put('/buyinProgress/crypto', [
     check('id', "The id is required").not().isEmpty(),

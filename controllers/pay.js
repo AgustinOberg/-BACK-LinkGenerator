@@ -10,7 +10,7 @@ const sharp = require('sharp');
 const { extractPayMethod } = require('../helpers/extractPayMethod');
 const {customAxios} = require('../helpers/p2pExtract')
 const fs = require('fs');
-const { searchAddress } = require('../helpers/findTo');
+const { searchAddress, detectPayment } = require('../helpers/findTo');
 
 
 const mercadoPago = async(req = request, res = response) => {
@@ -285,34 +285,18 @@ const inProgressCrypto = async (req, res=response) => {
 }
 
 const checkState = async (req, res=response) => {
-    const { hash } = req.params
-    const requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-    const bscscan = await fetch (`https://api.bscscan.com/api?module=proxy&action=eth_getTransactionReceipt&txhash=${hash}&apikey=${process.env.API_KEY_Bsc}`, requestOptions)
-    const polygon = await fetch (`https://api.polygonscan.com/api?module=proxy&action=eth_getTransactionReceipt&txhash=${hash}&apikey=${process.env.API_KEY_Ply}`, requestOptions)
-    const ethereum = await fetch (`https://api.etherscan.io/api?module=proxy&action=eth_getTransactionReceipt&txhash=${hash}&apikey=${process.env.API_KEY_Eth}`, requestOptions)
-    const bscscanData = await bscscan.json()
-    const polygonData = await polygon.json()
-    const ethereumData = await ethereum.json()
-    var transactionCheck = ""
-    if (!bscscanData.error  || !polygonData.error || !ethereumData.error) {
-        if ( bscscanData.result !== null) {
-            transactionCheck = bscscanData.result
-        }
-        if ( polygonData.result !== null) {
-            transactionCheck = polygonData.result
-        }
-        if ( ethereumData.result !== null) {
-            transactionCheck = ethereumData.result
-        }
-        const {to, status, logs} = transactionCheck
-        if ( (to === "0x" + process.env.to_bt1 || to === "0x" + process.env.to_bt2 || searchAddress(logs,process.env.to_bt1, process.env.to_bt2)) && (status === '0x1') ){
-            return res.status(200).json({
-                msg: "Pago aprobado"
-            })
-        }
+    const { hash, account } = req.params
+    const {to, status, logs, value, timeStamp} = await detectPayment(hash, account)
+    const toAddress = searchAddress(logs ,process.env.to_bt1, process.env.to_bt2)
+    console.log(value);
+    console.log(timeStamp);
+    var myDate = new Date(0);
+    myDate.setUTCSeconds(timeStamp);
+    console.log(myDate.getUTCDate() + " " +  myDate.getUTCMonth() + " " + myDate.getUTCFullYear() + " " + myDate.getUTCHours() + ":" + myDate.getUTCMinutes());
+    if ( (to === account || toAddress) && (status === '0x1') ){
+        return res.status(200).json({
+             msg: "Pago aprobado"
+        })
     }
     return res.status(400).json({
         msg: "No se pudo encontrar"
@@ -333,5 +317,5 @@ module.exports = {
     getValueByP2P,
     getValueMetamask,
     inProgressCrypto,
-    checkState,
+    checkState
 }
