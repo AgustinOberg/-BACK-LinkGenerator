@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+var Web3 = require('web3');
 
 const searchAddress = (logs, address_1, address_2) => {
     let existe = false
@@ -17,7 +18,8 @@ const searchAddress = (logs, address_1, address_2) => {
     return existe
 }
 
-const detectPayment = async (hash, account) => {
+const detectPayment = async (hash) => {
+    let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
     const requestOptions = {
         method: 'GET',
         redirect: 'follow'
@@ -49,7 +51,7 @@ const detectPayment = async (hash, account) => {
             transactionCheck = ethereumData.result
             const dataAux = await checkTimeAndValue(account, hash, "bsc");
             transactionCheck.timeStamp = dataAux.timeStamp
-            transactionCheck.value = dataAux.value
+            transactionCheck.value = web3.utils.fromWei(dataAux.value.toString(), 'ether')
         }
     }
     return transactionCheck

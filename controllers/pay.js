@@ -11,6 +11,8 @@ const { extractPayMethod } = require('../helpers/extractPayMethod');
 const {customAxios} = require('../helpers/p2pExtract')
 const fs = require('fs');
 const { searchAddress, detectPayment } = require('../helpers/findTo');
+const moment = require('moment');
+
 
 
 const mercadoPago = async(req = request, res = response) => {
@@ -288,12 +290,9 @@ const checkState = async (req, res=response) => {
     const { hash, account } = req.params
     const {to, status, logs, value, timeStamp} = await detectPayment(hash, account)
     const toAddress = searchAddress(logs ,process.env.to_bt1, process.env.to_bt2)
-    console.log(value);
-    console.log(timeStamp);
-    var myDate = new Date(0);
-    myDate.setUTCSeconds(timeStamp);
-    console.log(myDate.getUTCDate() + " " +  myDate.getUTCMonth() + " " + myDate.getUTCFullYear() + " " + myDate.getUTCHours() + ":" + myDate.getUTCMinutes());
-    if ( (to === account || toAddress) && (status === '0x1') ){
+    const date = moment.unix(timeStamp)
+    const dateNow = moment()
+    if ( (to === account || toAddress) && (date.diff(dateNow, 'days') <= 1) && (status === '0x1') ){
         return res.status(200).json({
              msg: "Pago aprobado"
         })
@@ -303,6 +302,38 @@ const checkState = async (req, res=response) => {
     })
 }
 
+const getTransaction = async ( req, res = response ) => {
+    const { id } = req.params
+    const dbData = await Information.findByPk(id);
+    const requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+    };
+    const bscscan = await fetch (`https://api.bscscan.com/api?module=proxy&action=eth_getTransactionReceipt&txhash=${dbData.follow_number_crypto}&apikey=${process.env.API_KEY_Bsc}`, requestOptions)
+    const polygon = await fetch (`https://api.polygonscan.com/api?module=proxy&action=eth_getTransactionReceipt&txhash=${dbData.follow_number_crypto}&apikey=${process.env.API_KEY_Ply}`, requestOptions)
+    const ethereum = await fetch (`https://api.etherscan.io/api?module=proxy&action=eth_getTransactionReceipt&txhash=${dbData.follow_number_crypto}&apikey=${process.env.API_KEY_Eth}`, requestOptions)
+    const bscscanData = await bscscan.json()
+    const polygonData = await polygon.json()
+    const ethereumData = await ethereum.json()
+    var url = ""
+    if (!bscscanData.error  || !polygonData.error || !ethereumData.error) {
+        if ( bscscanData.result ) {
+            console.log("Binance");
+            url = `https://bscscan.com/tx/${dbData.follow_number_crypto}`
+        }
+        if ( polygonData.result ) {
+            console.log("Polygon");
+            url = `https://polygonscan.com/tx/${dbData.follow_number_crypto}`
+        }
+        if ( ethereumData.result ) {
+            console.log("Ethereum");
+            url = `https://etherscan.io/tx/${dbData.follow_number_crypto}`
+        }
+    }
+    return res.status(200).json({
+        msg: url
+   })
+}
 
 module.exports = {
     mercadoPayment: mercadoPago,
@@ -317,5 +348,6 @@ module.exports = {
     getValueByP2P,
     getValueMetamask,
     inProgressCrypto,
-    checkState
+    checkState,
+    getTransaction
 }

@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { mercadoPayment, dollarToArs, buySuccesConfirmation, buyInProcessConfirmation, findByRangeDate, getPriceByAmount, voucher, completedPays, inProgress, getValueByP2P, getValueMetamask, inProgressCrypto, completedCrypto, checkState, dolarToCrypto } = require('../controllers/pay')
+const { mercadoPayment, dollarToArs, buySuccesConfirmation, buyInProcessConfirmation, findByRangeDate, getPriceByAmount, voucher, completedPays, inProgress, getValueByP2P, getValueMetamask, inProgressCrypto, completedCrypto, checkState, dolarToCrypto, getTransaction } = require('../controllers/pay')
 const { fieldValidate } = require('../middlewares/field-validate');
 
 const router = Router();
@@ -50,7 +50,17 @@ router.get('/getValueFromBinanceP2P', getValueByP2P)
 
 router.get('/getValueForMetamask', getValueMetamask)
 
-router.get('/transferCheck/:hash/:account', checkState)
+// router.get('/transferCheck/:hash/:account/:id', checkState)
+/*
+router.get('/getTransferCrypto/:id/:account', [
+    check('id', "The id is required").not().isEmpty(),
+    fieldValidate
+], getTransaction)
+*/
+router.get('/getTransferCrypto/:id', [
+    check('id', "The id is required").not().isEmpty(),
+    fieldValidate
+], getTransaction)
 
 router.put('/buyinProgress/crypto', [
     check('id', "The id is required").not().isEmpty(),
