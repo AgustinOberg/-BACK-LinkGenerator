@@ -21,14 +21,16 @@
     "express-pdf": "^1.2.2",
     "express-validator": "^6.11.1",
     "mercadopago": "^1.5.7",
+    "mime-types": "^2.1.32",
     "moment": "^2.29.1",
-    "multer": "^1.4.2",
+    "multer": "^1.4.3",
     "mysql2": "^2.2.5",
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.12",
     "sequelize": "^6.6.2",
     "sharp": "^0.28.3",
     "simple-encryptor": "^4.0.0",
+    "superagent": "^6.1.0",
     "web3": "^1.5.1"
   }
 }

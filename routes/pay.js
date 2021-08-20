@@ -51,12 +51,7 @@ router.get('/getValueFromBinanceP2P', getValueByP2P)
 router.get('/getValueForMetamask', getValueMetamask)
 
 // router.get('/transferCheck/:hash/:account/:id', checkState)
-/*
-router.get('/getTransferCrypto/:id/:account', [
-    check('id', "The id is required").not().isEmpty(),
-    fieldValidate
-], getTransaction)
-*/
+
 router.get('/getTransferCrypto/:id', [
     check('id', "The id is required").not().isEmpty(),
     fieldValidate

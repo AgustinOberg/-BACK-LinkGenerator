@@ -12,7 +12,8 @@ const {customAxios} = require('../helpers/p2pExtract')
 const fs = require('fs');
 const { searchAddress, detectPayment } = require('../helpers/findTo');
 const moment = require('moment');
-
+const mimeTypes = require('mime-types')
+const multer  = require('multer')
 
 
 const mercadoPago = async(req = request, res = response) => {
@@ -169,14 +170,39 @@ const buyInProcessConfirmation = async(req, res = response) => {
                 fs.mkdirSync('../transferencia_comprobantes/'+idDecrypted, {
                     recursive: true
                 });
-                sharp(eachImg.data)
-                .resize(1000)
-                .png({ compressionLevel: 8 })
-                .toFile("../transferencia_comprobantes/"+idDecrypted+"/" + eachIndex+1 + ".png")
-                .catch((err)=>{
-                    allSuccess = false
-                    console.log(err)
-                })
+                if (mimeTypes.extension(eachImg.mimetype).toString() === "png") {
+                    sharp(eachImg.data)
+                    .resize(1000)
+                    .png({ compressionLevel: 8 })
+                    .toFile("../transferencia_comprobantes/"+idDecrypted+"/" + eachIndex+1 + "." + mimeTypes.extension(eachImg.mimetype))
+                    .catch((err)=>{
+                        allSuccess = false
+                        console.log(err)
+                    })
+                }
+                if (mimeTypes.extension(eachImg.mimetype).toString() === "jpeg" || mimeTypes.extension(eachImg.mimetype).toString() === "jpg") {
+                    sharp(eachImg.data)
+                    .resize(1000)
+                    .jpeg({ compressionLevel: 8 })
+                    .toFile("../transferencia_comprobantes/"+idDecrypted+"/" + eachIndex+1 + "." + mimeTypes.extension(eachImg.mimetype))
+                    .catch((err)=>{
+                        allSuccess = false
+                        console.log(err)
+                    })
+                }
+                // if (mimeTypes.extension(eachImg.mimetype).toString() === "pdf") {
+                //     console.log(eachImg)
+                //     const storage = multer.diskStorage({
+                //         destination: function(req,file,cb) {
+                //             cb(null, '')
+                //         },
+                //         filename: function(req,file,cb) {
+                //             cb(null, eachIndex+1 + "." + mimeTypes.extension(eachImg.mimetype))
+                //         }
+                //     })
+                //     const upload = multer({ storage: storage})
+                //     upload.single(eachImg)
+                // }
             }
             else{
                 return res.status(500).json({
