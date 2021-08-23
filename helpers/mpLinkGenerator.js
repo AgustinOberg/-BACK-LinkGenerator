@@ -22,6 +22,11 @@ const mpLinkGenerator = async(id, amount, type) => {
             unit_price: amount,
             quantity: 1,
         }],
+        back_urls: {
+            "success": `https://user.pagosx.com/mp?id=${id}`,
+            "failure": `https://user.pagosx.com/mp?id=${id}`,
+            "pending": `https://user.pagosx.com/mp?id=${id}`
+        },
         notification_url: notifyUrl,
         
 
