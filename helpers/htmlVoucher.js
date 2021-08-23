@@ -51,7 +51,7 @@ const htmlVoucher = ({ date, amount, platform, encryptedId, status }) => {
         </p>
         <p>Monto: $${amount}</p>
         <p>Transacción: ${encryptedId}</p>
-        <p>Estado: ${status}</p>
+        <p>Estado: En revision</p>
       </div>
     </div>
   </body>
